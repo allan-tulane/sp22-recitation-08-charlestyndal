@@ -1,0 +1,2 @@
+language="python"
+run="python test_main.py"

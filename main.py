@@ -1,4 +1,5 @@
 from collections import defaultdict
+from collections import deque
 
 def make_undirected_graph(edge_list):
     """ Makes an undirected graph from a list of edge tuples. """
@@ -15,10 +16,13 @@ def reachable(graph, start_node):
       the set of nodes reachable from start_node
     """
     result = set([start_node])
-    frontier = set([start_node])
+    frontier = deque([start_node])
     while len(frontier) != 0:
-        ###TODO
-        pass
+      intersection = frontier.popleft()
+      for neighbor in graph[intersection]:
+        if neighbor not in result:
+          result.add(neighbor)
+          frontier.append(neighbor)
     return result
 
 def test_reachable():
@@ -33,8 +37,16 @@ def test_reachable():
 
 
 def connected(graph):
-    ### TODO
-    pass
+  points = len(graph)
+  ## first count the number of points by taking the length of the graph
+  firstPoint = next(iter(graph))
+  ## then using the iter function you can make it so you can interate through the set one at a time
+  inRangeFirst = reachable(graph, firstPoint)
+  ## then check if this point is able to reach the first point
+  
+  if(points == len(inRangeFirst)):
+    return True
+  return False
 
 def test_connected():
     graph = make_undirected_graph([('A', 'B'), ('B', 'C'), ('C', 'D'), ('D', 'B')])
@@ -45,16 +57,21 @@ def test_connected():
 
 
 def n_components(graph):
-    """
-    Returns:
-      the number of connected components in an undirected graph
-    """
-    ### TODO
-    pass
-
+  workingParts = set()
+  for i, j in graph.items():
+    part = reachable(graph, i)
+    part = tuple(sorted(part))
+    workingParts.add(part)
+  return len(workingParts)
+  
 def test_n_components():
     graph = make_undirected_graph([('A', 'B'), ('B', 'C'), ('C', 'D'), ('D', 'B')])
     assert n_components(graph) == 1
 
     graph = make_undirected_graph([('A', 'B'), ('B', 'C'), ('C', 'D'), ('D', 'B'), ('E', 'F'), ('F', 'G')])
     assert n_components(graph) == 2
+
+if __name__ == "__main__":
+  test_reachable()
+  test_connected()
+  test_n_components()
