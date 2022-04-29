@@ -16,13 +16,17 @@ def reachable(graph, start_node):
       the set of nodes reachable from start_node
     """
     result = set([start_node])
-    frontier = deque([start_node])
-    while len(frontier) != 0:
-      intersection = frontier.popleft()
+    front = deque([start_node])
+
+  
+    while len(front) != 0:
+      intersection = front.popleft()
+      ##pops left as the intersection
       for neighbor in graph[intersection]:
         if neighbor not in result:
+          ##if it is a result then add it and then append it from neighbor
           result.add(neighbor)
-          frontier.append(neighbor)
+          front.append(neighbor)
     return result
 
 def test_reachable():
@@ -58,9 +62,13 @@ def test_connected():
 
 def n_components(graph):
   workingParts = set()
+  ##work through the list of items in graph
   for i, j in graph.items():
+    ##checking the parts to see if it fits all criteria
     part = reachable(graph, i)
     part = tuple(sorted(part))
+
+    ##if it passed then add it to the list of working parts
     workingParts.add(part)
   return len(workingParts)
   
